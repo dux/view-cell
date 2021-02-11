@@ -27,6 +27,8 @@ Common usage is to use it views, but they you can easily use it standalone.
 ### Simple example
 
 ```ruby
+require 'view-cell'
+
 # ./app/lib/cell/foo_cell.rb
 class FooCell < ViewCell
   def bar
@@ -44,6 +46,8 @@ end
 ```
 
 ### Example for template render
+
+If yo want to keep template in separate file
 
 ```ruby
 # ./app/lib/cell/foo_cell.rb
@@ -141,13 +145,32 @@ class FooCell < ApplicationCell
     # renders './app/views/cells/custom/bar.[erb, haml]'
     render 'custom/bar'
 
-   # renders './custom/bar.[erb, haml]'
+    # renders './custom/bar.[erb, haml]'
     render './custom/bar'
   end
 end
+```
 
+### Raw usage for controlers and console
 
+```ruby
+class FooCell < ViewCell
+  def sq num=nil
+    num ||= @number
+    num * num
+  end
+end
 
+cell = FooCell.new(self || or_any_scope_you_wish)
+cell.sq(3) # 8
+
+# hash keys passed as params are converted to instance varialbes
+# in this case @number = 4
+cell = FooCell.new(self, number: 4)
+cell.sq # 16
+
+# or dinamic alternative
+ViewCell.get(self, :foo, number: 5).sq # 25
 ```
 
 ## Dependency
