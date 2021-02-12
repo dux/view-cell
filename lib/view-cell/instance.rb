@@ -42,7 +42,7 @@ class ViewCell
 
     name = name % class_part if name.include?('%s')
 
-    RENDER_CACHE.delete(name) if Rails.env.development?
+    RENDER_CACHE.delete(name) if development?
 
     RENDER_CACHE[name] ||= proc do
       # find extension if one not provided
@@ -51,14 +51,22 @@ class ViewCell
       unless name =~ /\.\w{2,4}$/
         if (file = Dir['%s*' % name].first)
           file_name = file
-        else
-          raise 'Template "%s.*" not found' % name
         end
+      end
+
+      unless File.exist?(file_name)
+        raise ArgumentError, 'Template "%s.*" not found' % name
       end
 
       Tilt.new(file_name)
     end.call
 
     RENDER_CACHE[name].render(self).html_safe
+  end
+
+  private
+
+  def development?
+    ENV['RAILS_ENV'] == 'development' || ENV['RACK_ENV'] == 'development'
   end
 end
