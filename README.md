@@ -1,8 +1,12 @@
 <img src="https://i.imgur.com/nQ7iNPy.png" align="right" title="image stolen from some js/react plugin"/>
 
-# view-cell => ruby web view lib
+# view-cell / ruby
 
-View cell is clean, simple explicit and strait-forward web view cell for use in Rails/Sinatra/Lux.
+View cell is clean, simple explicit and strait-forward web view cell/component for use in Rails/Sinatra/Lux.
+
+A cell is an object that represent a fragment of your UI. It can embrace an entire page, a single comment container in a thread or just an avatar image link.
+
+Simplifed, a cell is an object that can render a template or return html data from html builder as `html-tag`.
 
 ## Installation
 
@@ -26,6 +30,8 @@ Common usage is to use it views, but they you can easily use it standalone.
 
 ### Simple example
 
+Basic example 
+
 ```ruby
 require 'view-cell'
 
@@ -39,6 +45,8 @@ class FooCell < ViewCell
     num * num
   end
 end
+
+FooCell.new.bar # :baz
 
 # ./app/views/index.erb
 <%= cell.foo.bar %>   # :baz
@@ -96,6 +104,14 @@ end
 
 
 ### Annotated example with all features explained
+
+* `before` in `ApplicationCell` superclass and `before` in `FooCell` will be called before any code
+* `delegate` will send any message from cell to a parent. you need to use that if you want to use Rails view methods like `image_tag` without `parent` prefix.
+* render -> renders template
+  * `template_root` will point to root folder for templates defined as symbol. You can use `%s` to be replaced by template part (`FooCell` -> `foo`).
+  * `render :symbol` -> render using default path or using `template_root`
+  * `render 'relative/path'` -> render using default path or using `template_root`
+  * `render '/abslute/path'` -> does not use `render_template`
 
 ```ruby
 class ApplicationCell < ViewCell
@@ -175,7 +191,7 @@ ViewCell.get(self, :foo, number: 5).sq # 25
 
 ## Dependency
 
-none
+* `tilt` gem &sdot; [link](https://github.com/rtomayko/tilt) &sdot; allready included with by Rails
 
 ## Development
 
