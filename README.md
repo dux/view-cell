@@ -189,9 +189,20 @@ cell.sq # 16
 ViewCell.get(self, :foo, number: 5).sq # 25
 ```
 
+### Manual install of cell proxy method
+
+This will enable usage of `cell.name.method` proxy helper.
+
+```ruby
+class CustomClass
+  include ViewCell::ProxyMethod
+end
+```
+
 ## Dependency
 
 * `tilt` gem &sdot; [link](https://github.com/rtomayko/tilt) &sdot; allready included with by Rails
+* `dry-inflector` gem &sdot; [link](https://github.com/dry-rb/dry-inflector) &sdot; only if not using Rails
 
 ## Development
 

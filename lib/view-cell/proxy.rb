@@ -10,4 +10,11 @@ class ViewCell
       ViewCell.get(@parent, cell_name, vars)
     end
   end
+
+  # adaptrer will inject this
+  module ProxyMethod
+    def cell *args
+      ViewCell.cell self, *args
+    end
+  end
 end

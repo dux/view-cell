@@ -11,4 +11,5 @@ Gem::Specification.new gem_name, version do |gem|
   gem.license     = 'MIT'
 
   gem.add_runtime_dependency 'tilt'
+  gem.add_dependency 'dry-inflector'
 end
