@@ -1,14 +1,14 @@
-klass =
-if defined? ActionView::Base
-  ActionView::Base
-elsif defined? HtmlHelper
-  HtmlHelper
+if Object.const_defined?('ActionView::Base')
+  # Rails inject
+  ActionView::Base.include ViewCell::ProxyMethod
+
+elsif Object.const_defined?('Lux::Template::Helper')
+  # Lux inject
+  Lux::Template::Helper.include ViewCell::ProxyMethod
+
+elsif Object.const_defined?('Sinatra::Application')
+  # Sinatra inject
+  Sinatra::Application.include ViewCell::ProxyMethod
+
 end
 
-if klass
-  klass.class_eval do
-    def cell *args
-      ViewCell.cell self, *args
-    end
-  end
-end
