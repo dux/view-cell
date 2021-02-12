@@ -30,7 +30,7 @@ class ViewCell
   # render template by name
   def render name
     template_root = self.class.template_root
-    class_part    = self.class.to_s.underscore.sub(/_cell$/, '')
+    class_part    = _underscore self.class.to_s.sub(/_cell$/, '')
 
     if template_root
       name = [template_root, name].join '/'
@@ -42,7 +42,7 @@ class ViewCell
 
     name = name % class_part if name.include?('%s')
 
-    RENDER_CACHE.delete(name) if development?
+    RENDER_CACHE.delete(name) if _development?
 
     RENDER_CACHE[name] ||= proc do
       # find extension if one not provided
@@ -61,12 +61,26 @@ class ViewCell
       Tilt.new(file_name)
     end.call
 
-    RENDER_CACHE[name].render(self).html_safe
+    out = RENDER_CACHE[name].render(self)
+    out.respond_to?(:html_safe) ? out.html_safe : out
   end
 
   private
 
-  def development?
+  def _development?
     ENV['RAILS_ENV'] == 'development' || ENV['RACK_ENV'] == 'development'
+  end
+
+  def _underscore text
+    if text.respond_to?(:underscore)
+      # use framework underscore if possible
+      text.underscore
+    else
+      text.gsub(/::/, '/')
+        .gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2')
+        .gsub(/([a-z\d])([A-Z])/,'\1_\2')
+        .tr("-", "_")
+        .downcase
+    end
   end
 end
