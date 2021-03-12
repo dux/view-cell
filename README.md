@@ -30,7 +30,7 @@ Common usage is to use it views, but they you can easily use it standalone.
 
 ### Simple example
 
-Basic example 
+Basic example
 
 ```ruby
 require 'view-cell'
@@ -70,7 +70,7 @@ class FooCell < ViewCell
 
   def bar num
     @number = num
-    render :bar
+    template :bar
   end
 end
 
@@ -102,19 +102,24 @@ end
 <%= cell.foo.bar %> # <div class="bar"><p>foo</p></div>
 ```
 
-
 ### Annotated example with all features explained
 
 * `before` in `ApplicationCell` superclass and `before` in `FooCell` will be called before any code
 * `delegate` will send any message from cell to a parent. you need to use that if you want to use Rails view methods like `image_tag` without `parent` prefix.
-* render -> renders template
+* template -> renders template
   * `template_root` will point to root folder for templates defined as symbol. You can use `%s` to be replaced by template part (`FooCell` -> `foo`).
-  * `render :symbol` -> render using default path or using `template_root`
-  * `render 'relative/path'` -> render using default path or using `template_root`
-  * `render '/abslute/path'` -> does not use `render_template`
+  * `template :symbol` -> render using default path or using `template_root`
+  * `template 'relative/path'` -> render using default path or using `template_root`
+  * `template '/abslute/path'` -> does not use `template_root`
 
 ```ruby
 class ApplicationCell < ViewCell
+  # delegate calls to parent (caller scope)
+  delegate :request, :session, :current_user
+
+  # this will work if cell is called from a view, not if it is called from a controller
+  delegate :image_tag
+
   # define before in superclass
   def before
     # define @user as method call from parent
@@ -139,30 +144,28 @@ class FooCell < ApplicationCell
     @time = Time.now
   end
 
+  # same thing
+  before do
+    @time = Time.now
+  end
+
   # defaults to './app/views/' + class_part
   # but can be set to any path
   # %s is reference for class_part
   tamplate_root './app/views/%s'
-
-  # delegate image_tag method call to parent (caller scope)
-  # in Rails that would be ActionView::Base
-  delegate :image_tag
-
-  # delagate current_user call to parent
-  delegate :current_user
 
   def bar num
     # define instance variable available in templates
     @number = num
 
     # renders './app/views/cells/foo/bar.[erb, haml]'
-    render :bar
+    template :bar
 
     # renders './app/views/cells/custom/bar.[erb, haml]'
-    render 'custom/bar'
+    template 'custom/bar'
 
     # renders './custom/bar.[erb, haml]'
-    render './custom/bar'
+    template './custom/bar'
   end
 end
 ```

@@ -14,12 +14,12 @@ describe ViewCell do
   end
 
   it 'raises render error' do
-    expect { UserCell.new.not_found }.to raise_error ArgumentError    
+    expect { UserCell.new.not_found }.to raise_error ArgumentError
   end
 
   it 'renders template with parent instance variables' do
     @user = user
-    data = UserCell.new(self).profile
+    data  = UserCell.new(self).profile
     expect(data).to eq 'foo Dux bar'
   end
 

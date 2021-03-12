@@ -1,5 +1,5 @@
 class AppCell < ViewCell
-  def before
+  before do
     @numbers = [123]
   end
 end

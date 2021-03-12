@@ -28,7 +28,7 @@ class ViewCell
   end
 
   # render template by name
-  def render name
+  def template name
     template_root = self.class.template_root
     class_part    = self.class.to_s.underscore.sub(/_cell$/, '')
 

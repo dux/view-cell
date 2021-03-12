@@ -1,4 +1,4 @@
-class UserCell < AppCell 
+class UserCell < AppCell
   delegate :email
 
   def before
@@ -16,11 +16,11 @@ class UserCell < AppCell
 
   def profile
     @user = parent { @user }
-    render './spec/misc/profile'
+    template './spec/misc/profile'
   end
 
   def not_found
-    render :not_found
+    template :not_found
   end
 
   def uemail

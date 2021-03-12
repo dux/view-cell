@@ -25,6 +25,13 @@ class ViewCell
       end
     end
 
+    def before &block
+      define_method :before do
+        super() if self.class != ViewCell
+        instance_exec &block
+      end
+    end
+
     # set or get template root directory
     def template_root name=nil
       if name
