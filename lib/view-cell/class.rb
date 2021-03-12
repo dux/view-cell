@@ -15,12 +15,12 @@ class ViewCell
       end
     end
 
-    # cell.user.profile
-    # cell(:user, user: @user).profile
     def cell parent, *args
       if args.first
+        # cell(:user, user: @user).profile
         ViewCell.get(parent, *args)
       else
+        # cell.user.profile
         ViewCell::Proxy.new(parent)
       end
     end

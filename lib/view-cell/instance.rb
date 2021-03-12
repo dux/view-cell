@@ -24,7 +24,7 @@ class ViewCell
 
   # call
   def cell *args
-    ViewCell.get @_parent, *args
+    ViewCell.cell @_parent, *args
   end
 
   # render template by name
