@@ -170,6 +170,18 @@ class FooCell < ApplicationCell
 end
 ```
 
+### cell view - syntax sugar
+
+You can pass object or list of objects to `cell` view method.
+
+```ruby
+# cell.user.render(user)
+= cell @user
+
+# @users.each { |user| cell.user.render(user) }.join('')
+= cell @users
+```
+
 ### Raw usage for controlers and console
 
 ```ruby

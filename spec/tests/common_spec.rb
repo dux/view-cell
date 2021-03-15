@@ -23,6 +23,11 @@ describe ViewCell do
     expect(data).to eq 'foo Dux bar'
   end
 
+  it 'renders template with variable lists' do
+    data  = UserCell.new.profiles
+    expect(data).to eq 'x >dux<>foo< x >dux< x'
+  end
+
   it 'can deleate functions to parent scope' do
     # user object is parent scope!
     data = UserCell.new(user).uemail

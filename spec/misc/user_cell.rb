@@ -19,11 +19,20 @@ class UserCell < AppCell
     template './spec/misc/profile'
   end
 
+  def profiles
+    @users = [User.new('dux', 'dux@net'), User.new('foo', 'foo@net')]
+    template './spec/misc/profiles'
+  end
+
   def not_found
     template :not_found
   end
 
   def uemail
     email
+  end
+
+  def render user
+    '>%s<' % user.name
   end
 end
