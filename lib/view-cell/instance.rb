@@ -29,40 +29,38 @@ class ViewCell
 
   # render template by name
   def template name
-    template_root = self.class.template_root
-    class_part    = self.class.to_s.underscore.sub(/_cell$/, '')
-
-    if template_root
-      name = [template_root, name].join '/'
-    elsif name.is_a?(Symbol)
-      name = './app/views/cells/%s/%s' % [class_part, name]
-    elsif name.to_s =~ /^\w/
-      name = './app/views/cells/%s' % name
+    class_part = self.class.to_s.underscore.sub(/_cell$/, '')
+ 
+    path = if template_root = self.class.template_root
+      [template_root, class_part, name].join '/'
+    else
+      [File.dirname(caller[0]), name].join '/'
     end
 
-    name = name % class_part if name.include?('%s')
+    path = path % class_part if path.include?('%s')
 
-    RENDER_CACHE.delete(name) if _development?
+    RENDER_CACHE.delete(path) if _development?
+    RENDER_CACHE[path] ||= proc do
+      file_name = ''
 
-    RENDER_CACHE[name] ||= proc do
       # find extension if one not provided
-      file_name = name
-
-      unless name =~ /\.\w{2,4}$/
-        if (file = Dir['%s*' % name].first)
+      if path =~ /\.\w{2,4}$/
+        file_name = path
+      else
+        if (file = Dir['%s.*' % path].first)
           file_name = file
         end
       end
 
       unless File.exist?(file_name)
-        raise ArgumentError, 'Template "%s.*" not found' % name
+        file_name = file_name.sub(Lux.root.to_s, '.') if Object.const_defined?('Lux')
+        file_name = file_name.sub(Rails.root.to_s, '.') if Object.const_defined?('Rails')
+        raise ArgumentError, 'Template "%s.*" not found' % file_name
       end
 
       Tilt.new(file_name)
     end.call
-
-    out = RENDER_CACHE[name].render(self)
-    out.respond_to?(:html_safe) ? out.html_safe : out
+    RENDER_CACHE[path].render(self)
   end
 
   private
