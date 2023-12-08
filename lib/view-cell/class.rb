@@ -55,14 +55,5 @@ class ViewCell
         instance_exec &block
       end
     end
-
-    # set or get template root directory
-    def template_root name=nil
-      if name
-        self.class.instance_variable_set :@template_root, name
-      else
-        self.class.instance_variable_get :@template_root
-      end
-    end
   end
 end
