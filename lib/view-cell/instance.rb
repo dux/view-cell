@@ -50,9 +50,7 @@ class ViewCell
       end
 
       unless File.exist?(file_name)
-        file_name = file_name.sub(Lux.root.to_s, '.') if Object.const_defined?('Lux')
-        file_name = file_name.sub(Rails.root.to_s, '.') if Object.const_defined?('Rails')
-        raise ArgumentError, 'Template "%s.*" not found' % [path]
+        raise ArgumentError, 'Template "%s.*" not found' % [path.sub(Dir.pwd, '.')]
       end
 
       Tilt.new(file_name)
