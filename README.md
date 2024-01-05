@@ -246,6 +246,10 @@ class CustomClass
 end
 ```
 
+## Test
+
+`rake test`
+
 ## Dependency
 
 * `tilt` gem &sdot; [link](https://github.com/rtomayko/tilt) &sdot; allready included with by Rails

@@ -12,4 +12,5 @@ Gem::Specification.new gem_name, version do |gem|
 
   gem.add_runtime_dependency 'tilt'
   gem.add_dependency 'dry-inflector'
+  gem.add_dependency 'sassc'
 end

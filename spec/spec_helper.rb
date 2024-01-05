@@ -1,6 +1,10 @@
 require 'awesome_print'
 require 'tilt'
 
+unless ARGV.join(' ').include?('.rb')
+  raise ArgumentError, %[add *_spec.rb as argument or start with "rake test"]
+end
+
 require_relative '../lib/view-cell'
 
 require_relative './misc/user'

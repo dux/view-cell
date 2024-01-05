@@ -1,11 +1,9 @@
 source 'http://rubygems.org'
 
-gem 'sassc'
-
 gemspec
 
 group :test do
   gem 'rspec'
-  gem 'lux-fw'
+  gem 'rake'
   gem 'awesome_print'
 end
