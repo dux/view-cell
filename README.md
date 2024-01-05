@@ -35,7 +35,7 @@ Basic example
 ```ruby
 require 'view-cell'
 
-# ./app/lib/cell/foo_cell.rb
+# foo_cell.rb
 class FooCell < ViewCell
   def bar
     :baz
@@ -48,7 +48,7 @@ end
 
 FooCell.new.bar # :baz
 
-# ./app/views/index.erb
+# index.html.erb
 <%= cell.foo.bar %>   # :baz
 <%= cell.foo.sq(3) %> # 9
 ```
@@ -58,11 +58,10 @@ FooCell.new.bar # :baz
 If yo want to keep template in separate file
 
 ```ruby
-# ./app/lib/cell/foo_cell.rb
+# foo_cell.rb
 class FooCell < ViewCell
-  # defaults to './app/views/' + class_part
-  # but can be set to any path
-  tamplate_root './app/views/foo'
+  # defaults to current cell folder, but can be set to any path
+  template_root './app/views/cells'
 
   # delegate image_tag method call to parent (caller scope)
   # in Rails that would be ActionView::Base
@@ -74,11 +73,11 @@ class FooCell < ViewCell
   end
 end
 
-# ./app/views/foo/bar.html.haml
-= image_tag '/foo.png'
-= parent.image_tag '/foo.png'     # if you do not want to delegte :image_tag
+# bar.html.haml
+= image_tag '/foo.png'            # when delegated to parent
+= parent.image_tag '/foo.png'     # if you do not want to delegate :image_tag
 = parent { image_tag '/foo.png' } # same
-= @number * @number
+= @number * @number               # instance varibles are passed
 
 ```
 
@@ -92,14 +91,37 @@ require 'html-tag'
 
 class FooCell < ViewCell
   def bar
-    tag.div class: :bar do |n|
-      n.p :foo
+    tag.div class: :bar do
+      p 'foo'
     end
   end
 end
 
 # ./app/views/index.erb
 <%= cell.foo.bar %> # <div class="bar"><p>foo</p></div>
+```
+
+### Integrated css / scss parser
+
+Uses `gem 'scssc'` (`https://github.com/sass/sassc-ruby`, loaded only if used) to add integrated css capabilities
+
+```ruby
+# ./app/lib/cell/foo_cell.rb
+class FooCell < ViewCell
+  # css / scss file path
+  css 'foo/bar.scss'
+
+  # add inline css / scss
+  css %[
+    .foo {
+      .bar {
+        font-weight: bold;
+      }
+    }
+  ]
+end
+
+ViewCell.css # get compiled css
 ```
 
 ### Annotated example with all features explained
@@ -115,10 +137,20 @@ end
 ```ruby
 class ApplicationCell < ViewCell
   # delegate calls to parent (caller scope)
-  delegate :request, :session, :current_user
-
   # this will work if cell is called from a view, not if it is called from a controller
-  delegate :image_tag
+  delegate :request, :session, :current_user, :image_tag
+
+  # css / scss file path
+  css 'foo/bar.scss'
+
+  # add inline css / scss
+  css %[
+    .foo {
+      .bar {
+        font-weight: bold;
+      }
+    }
+  ]
 
   # define before in superclass
   def before
@@ -152,7 +184,7 @@ class FooCell < ApplicationCell
   # defaults to './app/views/' + class_part
   # but can be set to any path
   # %s is reference for class_part
-  tamplate_root './app/views/%s'
+  template_root './app/views/cells/%s'
 
   def bar num
     # define instance variable available in templates

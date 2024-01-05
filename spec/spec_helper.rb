@@ -6,6 +6,7 @@ require_relative '../lib/view-cell'
 require_relative './misc/user'
 require_relative './misc/app_cell'
 require_relative './misc/user_cell'
+require_relative './misc/tpl_cell'
 
 # basic config
 RSpec.configure do |config|
@@ -17,6 +18,10 @@ RSpec.configure do |config|
 
   # # Use the specified formatter
   config.formatter = :documentation # :progress, :html, :json, CustomFormatterClass
+
+  config.before do |f|
+    ViewCell.template_root nil
+  end
 end
 
 

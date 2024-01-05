@@ -1,6 +1,8 @@
 class UserCell < AppCell
   delegate :email
 
+  css 'css/user.scss'
+
   def before
     super
     @numbers.push 456
@@ -16,12 +18,12 @@ class UserCell < AppCell
 
   def profile
     @user = parent { @user }
-    template './spec/misc/profile'
+    template :profile
   end
 
   def profiles
     @users = [User.new('dux', 'dux@net'), User.new('foo', 'foo@net')]
-    template './spec/misc/profiles'
+    template 'profiles'
   end
 
   def not_found

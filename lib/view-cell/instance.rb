@@ -27,9 +27,37 @@ class ViewCell
 
   # render template by name
   def template name
-    template = Pathname.new(caller[0]).dirname + name.to_s
-    template = template.to_s.sub(Lux.root.to_s, '.')
-    Lux::Template.render(self, template.to_s)
+    path = if template_root = self.class.template_root
+      [template_root, name].join '/'
+    else
+      [File.dirname(caller[0]), name].join '/'
+    end
+
+    class_part = self.class.to_s.underscore.sub(/_cell$/, '')
+    path = path % class_part if path.include?('%s')
+
+    RENDER_CACHE.delete(path) if _development?
+    RENDER_CACHE[path] ||= begin
+      file_name = ''
+
+      # find extension if one not provided
+      if path =~ /\.\w{2,4}$/
+        file_name = path
+      else
+        if (file = Dir['%s.*' % path].first)
+          file_name = file
+        end
+      end
+
+      unless File.exist?(file_name)
+        file_name = file_name.sub(Lux.root.to_s, '.') if Object.const_defined?('Lux')
+        file_name = file_name.sub(Rails.root.to_s, '.') if Object.const_defined?('Rails')
+        raise ArgumentError, 'Template "%s.*" not found' % [path]
+      end
+
+      Tilt.new(file_name)
+    end
+    RENDER_CACHE[path].render(self)
   end
 
   private

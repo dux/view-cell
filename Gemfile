@@ -1,5 +1,7 @@
 source 'http://rubygems.org'
 
+gem 'sassc'
+
 gemspec
 
 group :test do

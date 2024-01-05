@@ -1,4 +1,9 @@
 class ViewCell
+  DATA ||= {
+    template_root: nil,
+    css: {}
+  }
+  
   class << self
     # load cell based on a name, pass context and optional vars
     # ViewCell.get(:user, self) -> UserCell.new(self)
@@ -53,6 +58,37 @@ class ViewCell
       define_method :before do
         super() if self.class != ViewCell
         instance_exec &block
+      end
+    end
+
+    # set or get template root directory
+    def template_root name = :_
+      if name != :_
+        DATA[:template_root] = name
+      else
+        DATA[:template_root]
+      end
+    end
+
+    def css text = nil
+      if text      
+        require 'sassc' unless Object.const_defined?('SassC')
+
+        unless text.include?('{')
+          dir_name = self.template_root || File.dirname(caller[0].split(':')[0])
+          class_part = to_s.underscore.sub(/_cell$/, '')
+          dir_name = dir_name % class_part if dir_name.include?('%s')
+          css_file = Pathname.new(dir_name).join(text)
+          text = css_file.read
+        end
+
+        key = caller[0].split(':in ')[0]
+        DATA[:css][key] = SassC::Engine.new(text, style: :compact).render.gsub(/\n+/, $/).chomp
+      else
+        DATA[:css].inject([]) do |list, el|
+          name = el[0].split('/').last.split('.')[0].gsub('_', '-')
+          list.push("/* #{name} */\n" + el[1])
+        end.join("\n\n")
       end
     end
   end
