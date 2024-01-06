@@ -1,20 +1,17 @@
-if Object.const_defined?('ActionView::Base')
-  # Rails inject
-  ActionView::Base.include ViewCell::ProxyMethod
+# enables shorcut
+#  FooCell.new(self).bar -> cell.foo.bar
 
-elsif Object.const_defined?('Lux::Template::Helper')
-  # Lux inject
-  Lux::Template::Helper.include ViewCell::ProxyMethod
+# include gem before rails if you do not want to import proxy methods
+# gem 'view-cell'
 
-  Lux::Controller.class_eval do
-    def cell *args
-      ViewCell.cell self.helper, *args
-    end
+[
+  'ActionView::Base',
+  'ActionController::Base',
+  'Lux::Template::Helper', 
+  'Lux::Controller',
+  'Sinatra::Application'
+].each do |klass|
+  if Object.const_defined?(klass)
+    klass.constantize.include ViewCell::ProxyMethod
   end
-
-elsif Object.const_defined?('Sinatra::Application')
-  # Sinatra inject
-  Sinatra::Application.include ViewCell::ProxyMethod
-
 end
-

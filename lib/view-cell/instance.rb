@@ -1,7 +1,7 @@
 class ViewCell
   RENDER_CACHE ||= {}
 
-  def initialize parent=nil, vars={}
+  def initialize parent = nil, vars={}
     @_parent = parent
     vars.each { |k,v| instance_variable_set "@#{k}", v}
     before
