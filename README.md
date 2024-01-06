@@ -81,7 +81,7 @@ end
 
 ```
 
-### Example with <a href="https://github.com/dux/html-tag">html-tag</a> gem
+### Return html with integrated tag builder (using <a href="https://github.com/dux/html-tag">html-tag</a> gem)
 
 It is usually easier to build html then use templates
 

@@ -1,13 +1,28 @@
 require 'spec_helper'
 
-describe ViewCell do
+###
+
+class TplCell < ViewCell
+  template_root './spec/views/%s'
+
+  css 'foo.scss'
+
+  def foo
+    @num = 3
+    template 'tpl/base'
+  end
+end
+
+###
+
+describe 'tpl' do
   before do
     TplCell.template_root './spec/views'
   end
   
   it 'compiles css defined in custom template root' do
     css = TplCell.css
-    expect(css.length).to eq(144)
+    expect(css.length).to eq(53)
   end
 
   it 'compiles template defined in custom template root' do

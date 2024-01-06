@@ -1,4 +1,6 @@
 require 'pathname'
+require 'html-tag'
+require 'class-cattr'
 
 require_relative 'view-cell/class'
 require_relative 'view-cell/instance'

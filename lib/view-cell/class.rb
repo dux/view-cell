@@ -1,8 +1,13 @@
 class ViewCell
+  include HtmlTag
+  
   DATA ||= {
     template_root: nil,
     css: {}
   }
+
+  # exports "template_root" class attr
+  cattr :template_root, class: true
   
   class << self
     # load cell based on a name, pass context and optional vars
@@ -58,15 +63,6 @@ class ViewCell
       define_method :before do
         super() if self.class != ViewCell
         instance_exec &block
-      end
-    end
-
-    # set or get template root directory
-    def template_root name = :_
-      if name != :_
-        DATA[:template_root] = name
-      else
-        DATA[:template_root]
       end
     end
 

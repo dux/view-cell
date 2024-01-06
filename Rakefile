@@ -1,4 +1,8 @@
 desc 'run rspec'
 task :test do
-  system "find spec -name '*_spec.rb' | xargs rspec --fail-fast"
+  for file in `find spec -name '*_spec.rb'`.split($/)
+    command = "rspec --fail-fast #{file}"
+    puts "---\nbundle exec #{command}\n---"
+    exit unless system command
+  end
 end
