@@ -1,6 +1,6 @@
 class ViewCell
   include HtmlTag
-  
+
   DATA ||= {
     template_root: nil,
     css: {}
@@ -8,7 +8,7 @@ class ViewCell
 
   # exports "template_root" class attr
   cattr :template_root, class: true
-  
+
   class << self
     # load cell based on a name, pass context and optional vars
     # ViewCell.get(:user, self) -> UserCell.new(self)
@@ -67,7 +67,9 @@ class ViewCell
     end
 
     def css text = nil
-      if text      
+      text = yield if block_given?
+
+      if text
         require 'sassc' unless Object.const_defined?('SassC')
 
         unless text.include?('{')

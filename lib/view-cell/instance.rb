@@ -53,9 +53,15 @@ class ViewCell
         raise ArgumentError, 'Template "%s.*" not found' % [path.sub(Dir.pwd, '.')]
       end
 
+      if defined?(Lux)
+        Lux.current.files_in_use file_name
+      end
+
       Tilt.new(file_name)
     end
-    RENDER_CACHE[path].render(self)
+
+    data = RENDER_CACHE[path].render(self)
+    Lux::Template.wrap_with_debug_info file_name, data
   end
 
   private
